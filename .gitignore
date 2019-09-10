@@ -1,9 +1,3 @@
 .idea
 *.lock
-vendor/*
-!vendor/composer/
-vendor/composer/*
-!vendor/composer/*.php
-!vendor/level-2
-vendor/level-2/dice/*
-!vendor/level-2/dice/*.php
+vendor
