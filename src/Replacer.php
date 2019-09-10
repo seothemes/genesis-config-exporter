@@ -69,6 +69,7 @@ class Replacer {
 	private function get_plugins() {
 		$plugins = '';
 		$active  = \array_values( \get_option( 'active_plugins' ) );
+		$count   = 0;
 
 		if ( ( $key = array_search( $this->plugin->base, $active ) ) !== false ) {
 			unset( $active[ $key ] );
@@ -79,11 +80,12 @@ class Replacer {
 			$name = ucwords( str_replace( '-', ' ', $base ) );
 			$url  = "https://wordpress.org/plugins/$base/";
 
-			$plugins .= "[
-				'name' => '{$name}',
-				'slug' => '{$slug}',
+			$plugins .= 0 === $count++ ? "[" : "\n\t\t\t[";
+			$plugins .= "
+				'name'       => '{$name}',
+				'slug'       => '{$slug}',
 				'public_url' => '{$url}',
-			],\n";
+			],";
 		}
 
 		return $plugins;
@@ -183,8 +185,8 @@ class Replacer {
 				$menu_item_slugs[ $menu_item->ID ] = $url;
 
 				$menus .= "\t\t\t'{$url}' => [\n";
-				$menus .= "\t\t\t\t'title' => '{$menu_item->title}',\n";
-				$menus .= "\t\t\t\t'id'    => '{$url}',\n";
+				$menus .= "\t\t\t\t'title'  => '{$menu_item->title}',\n";
+				$menus .= "\t\t\t\t'id'     => '{$url}',\n";
 
 				// If has a parent.
 				if ( $menu_item->menu_item_parent ) {

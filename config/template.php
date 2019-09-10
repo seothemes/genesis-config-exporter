@@ -20,7 +20,7 @@ return <<<TEMPLATE
 
 return [
 	'dependencies' => [
-		'plugins'          => [
+		'plugins'      => [
 			{{plugins}}
 		],
 	],
