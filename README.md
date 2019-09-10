@@ -1,6 +1,6 @@
 # Genesis Config Exporter
 
-Automates the min-numbingly tedious task of writing onboarding config files for Genesis child themes.
+Automates the creation of onboarding config files for Genesis child themes.
 
 Below is a list of configs that can be automatically generated:
 
