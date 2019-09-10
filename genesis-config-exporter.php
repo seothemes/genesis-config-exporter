@@ -35,26 +35,28 @@ try {
 	$injector  = new Injector();
 	$rules     = require_once __DIR__ . '/config/rules.php';
 	$container = $injector->addRules( $rules );
-	$command   = $container->create( Command::class );
-	$admin     = $container->create( Admin::class );
-	$debug     = $container->create( Debug::class );
 
 	if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		try {
+
 			/**
 			 * Add WP CLI command.
 			 *
 			 * @var callable $command __invoke magic method.
 			 */
+			$command = $container->create( Command::class );
+
 			\WP_CLI::add_command( 'genesis config', $command );
 
 		} catch ( \Exception $exception ) {
 			new \WP_Error( $exception );
 		}
-	} else if ( \is_admin() ) {
+	} else if ( \is_admin() && Admin::ADMIN_WORKING ) {
+		$admin = $container->create( Admin::class );
 		$admin->register();
 
-	} else {
+	} else if ( Debug::DEBUG ) {
+		$debug = $container->create( Debug::class );
 		$debug->dump();
 	}
 }, 20 );

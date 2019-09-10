@@ -17,7 +17,7 @@ class Debug {
 	/**
 	 * @var bool
 	 */
-	const DEBUG = true;
+	const DEBUG = false;
 
 	/**
 	 * Debug constructor.

@@ -27,7 +27,8 @@ class Admin {
 	/**
 	 * Admin constructor.
 	 *
-	 * @param Plugin $plugin
+	 * @param Plugin    $plugin
+	 * @param Generator $generator
 	 */
 	public function __construct( Plugin $plugin, Generator $generator ) {
 		$this->plugin    = $plugin;
@@ -42,12 +43,12 @@ class Admin {
 	 * @return void
 	 */
 	public function register() {
-		if ( ! \current_user_can( 'manage_options' ) ) {
+		// TODO: Remove when admin functionality is working.
+		if ( ! self::ADMIN_WORKING ) {
 			return;
 		}
 
-		// TODO: Remove when admin functionality is working.
-		if ( ! self::ADMIN_WORKING ) {
+		if ( ! \current_user_can( 'manage_options' ) ) {
 			return;
 		}
 
