@@ -21,7 +21,7 @@ Below is a list of configs that can be automatically generated:
 
 ## Installation
 
-This is a regular plugin. Install it as you would any other.
+Download and install this plugin https://github.com/seothemes/genesis-config-exporter/archive/master.zip
 
 You will also need WP CLI installed on your machine to use it. See [installing WP-CLI](https://wp-cli.org/#installing).
 
