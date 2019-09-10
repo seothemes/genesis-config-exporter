@@ -19,12 +19,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Load Composer packages.
-require_once __DIR__ . '/vendor/autoload.php';
+// Autoload classes.
+try {
+	\spl_autoload_register( function ( $class ) {
+		if ( strpos( $class, __NAMESPACE__ ) !== false ) {
+			require_once __DIR__ . '/src' . str_replace( '\\', DIRECTORY_SEPARATOR, substr( $class, strlen( __NAMESPACE__ ) ) ) . '.php';
+		}
+	} );
+} catch ( \Exception $exception ) {
+	new \WP_Error( $exception );
+}
 
 // Run after theme is setup.
 \add_action( 'after_setup_theme', function () {
-	$injector  = new \Dice\Dice();
+	$injector  = new Injector();
 	$rules     = require_once __DIR__ . '/config/rules.php';
 	$container = $injector->addRules( $rules );
 	$command   = $container->create( Command::class );
