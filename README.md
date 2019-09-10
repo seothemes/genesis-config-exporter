@@ -10,6 +10,8 @@ Below is a list of configs that can be automatically generated:
 - **Menus** - All registered navigation menus and menu items.
 - **Widgets** - All active widgets. Excludes Inactive Widgets.
 
+The config file is automatically generated and placed in the child theme config directory.
+
 ## Requirements
 
 | Requirement | Version |
