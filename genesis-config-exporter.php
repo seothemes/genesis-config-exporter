@@ -19,46 +19,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Autoload classes.
-try {
-	\spl_autoload_register( function ( $class ) {
-		if ( strpos( $class, __NAMESPACE__ ) !== false ) {
-			require_once __DIR__ . '/src' . str_replace( '\\', DIRECTORY_SEPARATOR, substr( $class, strlen( __NAMESPACE__ ) ) ) . '.php';
-		}
-	} );
-} catch ( \Exception $exception ) {
-	new \WP_Error( $exception );
-}
+/**
+ * Autoload classes.
+ *
+ * @noinspection PhpUnhandledExceptionInspection
+ */
+\spl_autoload_register( function ( $class ) {
+	if ( strpos( $class, __NAMESPACE__ ) !== false ) {
+		require_once __DIR__ . '/src' . str_replace( '\\', DIRECTORY_SEPARATOR, substr( $class, strlen( __NAMESPACE__ ) ) ) . '.php';
+	}
+} );
 
-// Run after theme is setup.
+// Hook everything to after setup theme.
 \add_action( 'after_setup_theme', function () {
-	$injector  = new Injector();
-	$rules     = require_once __DIR__ . '/config/rules.php';
-	$container = $injector->addRules( $rules );
+	$command = new Command( new Generator( new Plugin( __FILE__ ) ) );
 
 	if ( defined( 'WP_CLI' ) && WP_CLI ) {
-		try {
 
-			/**
-			 * Add WP CLI command.
-			 *
-			 * @var callable $command __invoke magic method.
-			 */
-			$command = $container->create( Command::class );
-
-			\WP_CLI::add_command( 'genesis config', $command );
-
-		} catch ( \Exception $exception ) {
-			new \WP_Error( $exception );
-		}
-	} else if ( \is_admin() && Admin::ADMIN_WORKING ) {
-		$admin = $container->create( Admin::class );
-		$admin->register();
-
-	} else if ( Debug::DEBUG ) {
-		$debug = $container->create( Debug::class );
-		$debug->dump();
+		/**
+		 * Add WP CLI command.
+		 *
+		 * @var callable $command __invoke magic method.
+		 */
+		\WP_CLI::add_command( 'genesis config', $command );
 	}
 }, 20 );
-
-

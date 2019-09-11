@@ -12,7 +12,7 @@ class Command {
 	/**
 	 * @var Generator
 	 */
-	protected $generator;
+	public $generator;
 
 	/**
 	 * Command constructor.
@@ -40,11 +40,11 @@ class Command {
 		}
 
 		if ( ! isset( $assoc_args['dry'] ) ) {
-			$this->generator->generate( $args, $assoc_args );
+			$this->generator->generate( $assoc_args );
 		}
 
 		if ( isset( $assoc_args['dry'] ) ) {
-			echo $this->generator->data;
+			echo $this->generator->replace();
 		}
 
 		\WP_CLI::success( 'Generated ' . $this->generator->file_path );

@@ -9,8 +9,7 @@
     }
   ],
   "require": {
-    "php": "^7.2",
-    "level-2/dice": "^4.0"
+    "php": "^7.2"
   },
   "require-dev": {
     "brain/monkey": "^2.3",
