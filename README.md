@@ -59,6 +59,14 @@ Disables the warning prompt:
 --force=true
 ```
 
+### image_dir
+
+Specifices the directory to store featured images:
+
+```shell
+--image_dir='/config/images/'
+```
+
 ### Extra
 
 #### Debugging

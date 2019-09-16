@@ -38,7 +38,7 @@ class Generator {
 		$this->plugin    = $plugin;
 		$this->template  = require_once $this->plugin->dir . 'config/template.php';
 		$this->file_path = \get_stylesheet_directory() . '/config/onboarding.php';
-		$this->image_dir = '/assets/img/';
+		$this->image_dir = '/config/images/';
 	}
 
 	/**
@@ -63,7 +63,7 @@ class Generator {
 		 */
 		global $wp_filesystem;
 
-		$wp_filesystem->put_contents( $this->file_path, $this->replace() );
+		$wp_filesystem->put_contents( $this->file_path, $this->replace( $args ) );
 	}
 
 	/**
@@ -71,9 +71,11 @@ class Generator {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @param array $args Command args.
+	 *
 	 * @return mixed
 	 */
-	public function replace() {
+	public function replace( $args ) {
 		$template = $this->template;
 		$theme    = \wp_get_theme();
 
@@ -82,10 +84,10 @@ class Generator {
 			'package' => $theme->get( 'Name' ),
 			'author'  => $theme->get( 'Author' ),
 			'link'    => $theme->get( 'ThemeURI' ),
-			'plugins' => $this->get_plugins(),
-			'content' => $this->get_content(),
-			'navmenu' => $this->get_navmenu(),
-			'widgets' => $this->get_widgets(),
+			'plugins' => $this->get_plugins( $args ),
+			'content' => $this->get_content( $args ),
+			'navmenu' => $this->get_navmenu( $args ),
+			'widgets' => $this->get_widgets( $args ),
 		];
 
 		foreach ( $replace as $from => $to ) {
@@ -100,9 +102,11 @@ class Generator {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @param array $args Command args.
+	 *
 	 * @return string
 	 */
-	private function get_plugins() {
+	private function get_plugins( $args ) {
 		$plugins = '';
 		$active  = \array_values( \get_option( 'active_plugins' ) );
 		$count   = 0;
@@ -132,9 +136,11 @@ class Generator {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @param array $args Command args.
+	 *
 	 * @return string
 	 */
-	private function get_content() {
+	private function get_content( $args ) {
 		$content = '';
 		$posts   = \get_posts( [
 			'numberposts' => -1,
@@ -167,7 +173,7 @@ class Generator {
 			$featured_image = '';
 
 			if ( isset( $meta['_thumbnail_id'][0] ) || 'attachment' === $post->post_type ) {
-				$featured_image = $this->get_featured_image( $post, $meta );
+				$featured_image = $this->get_featured_image( $post, $meta, $args );
 			}
 
 			// Generate content.
@@ -193,13 +199,15 @@ class Generator {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param $post
-	 * @param $meta
+	 * @param       $post
+	 * @param       $meta
+	 * @param array $args Command args.
 	 *
 	 * @return string
 	 */
-	private function get_featured_image( $post, $meta ) {
-		$image = [];
+	private function get_featured_image( $post, $meta, $args ) {
+		$image     = [];
+		$image_dir = isset( $args['image_dir'] ) ? $args['image_dir'] : $this->image_dir;
 
 		if ( 'attachment' === $post->post_type ) {
 			$image['path'] = \wp_get_upload_dir()['basedir'] . DIRECTORY_SEPARATOR . $meta['_wp_attached_file'][0];
@@ -208,10 +216,10 @@ class Generator {
 			$image['path'] = \get_attached_file( $meta['_thumbnail_id'][0] );
 		}
 
-		$image['dir']  = \get_stylesheet_directory() . $this->image_dir;
+		$image['dir']  = \get_stylesheet_directory() . $image_dir;
 		$image['name'] = \basename( $image['path'] );
 		$image['file'] = $image['dir'] . DIRECTORY_SEPARATOR . $image['name'];
-		$image['url']  = "\\get_stylesheet_directory() . '{$this->image_dir}{$image['name']}'";
+		$image['url']  = "\\get_stylesheet_directory() . '{$image_dir}{$image['name']}'";
 
 		if ( ! is_dir( $image['dir'] ) ) {
 			\wp_mkdir_p( $image['dir'] );
@@ -287,9 +295,11 @@ class Generator {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @param array $args Command args.
+	 *
 	 * @return string
 	 */
-	private function get_navmenu() {
+	private function get_navmenu( $args ) {
 		$menus     = '';
 		$locations = \get_registered_nav_menus();
 
@@ -330,9 +340,11 @@ class Generator {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @param array $args Command args.
+	 *
 	 * @return string
 	 */
-	private function get_widgets() {
+	private function get_widgets( $args ) {
 		$widgets = '';
 
 		$sidebars_widgets = \wp_get_sidebars_widgets();
